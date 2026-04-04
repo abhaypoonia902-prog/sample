@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nurse Dashboard - ZetaTech HMS</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fas fa-heartbeat"></i> ZetaTech HMS</h3>
+            </div>
+            
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">N</div>
+                <div class="user-details">
+                    <p id="userName">Nurse Name</p>
+                    <span id="userRole">nurse</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+                <a href="#" class="nav-item" data-page="patients">
+                    <i class="fas fa-users"></i> Patients
+                </a>
+                <a href="#" class="nav-item" data-page="rooms">
+                    <i class="fas fa-door-open"></i> Room Status
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="#" class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Area -->
+        <main class="main-area">
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <div class="page-title">
+                    <h2>Nurse Dashboard</h2>
+                    <p>Patient monitoring and room management</p>
+                </div>
+                <div class="top-actions">
+                    <button class="notification-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge" id="notificationBadge">0</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <div id="alertContainer"></div>
+                
+                <!-- Dashboard View -->
+                <div id="dashboardView">
+                    <!-- Stats -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon blue">
+                                <i class="fas fa-users"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4 id="totalPatients">0</h4>
+                                <p>Total Patients</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon yellow">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4 id="pendingRequests">0</h4>
+                                <p>Pending Requests</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon green">
+                                <i class="fas fa-door-open"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4 id="availableRooms">0</h4>
+                                <p>Available Rooms</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon red">
+                                <i class="fas fa-door-closed"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4 id="occupiedRooms">0</h4>
+                                <p>Occupied Rooms</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Room Status Overview -->
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-door-open"></i> Room Status Overview</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="roomsOverviewContainer">
+                                <div class="loading">
+                                    <div class="spinner"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Patients View -->
+                <div id="patientsView" class="hidden">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-users"></i> All Patients</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="patientsContainer">
+                                <div class="loading">
+                                    <div class="spinner"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Rooms View -->
+                <div id="roomsView" class="hidden">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-door-open"></i> Room Management</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="roomsContainer">
+                                <div class="loading">
+                                    <div class="spinner"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="main.js"></script>
+    <script>
+        // Check authentication
+        if (!ZetaTech.checkAuth('nurse')) {
+            window.location.href = 'index.html';
+        }
+
+        // Initialize
+        const user = ZetaTech.getUser();
+        ZetaTech.initSidebar(user);
+
+        // Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const page = item.dataset.page;
+                showPage(page);
+                
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                item.classList.add('active');
+            });
+        });
+
+        function showPage(page) {
+            document.getElementById('dashboardView').classList.add('hidden');
+            document.getElementById('patientsView').classList.add('hidden');
+            document.getElementById('roomsView').classList.add('hidden');
+            
+            document.getElementById(page + 'View').classList.remove('hidden');
+            
+            if (page === 'dashboard') {
+                loadDashboardStats();
+                loadRoomsOverview();
+            } else if (page === 'patients') {
+                loadPatients();
+            } else if (page === 'rooms') {
+                loadRooms();
+            }
+        }
+
+        // Load Dashboard Stats
+        async function loadDashboardStats() {
+            try {
+                const statsResponse = await ZetaTech.apiRequest('/admin/stats');
+                const stats = await statsResponse.json();
+                
+                document.getElementById('totalPatients').textContent = stats.total_patients;
+                document.getElementById('pendingRequests').textContent = stats.pending_requests;
+                document.getElementById('availableRooms').textContent = stats.available_rooms;
+                document.getElementById('occupiedRooms').textContent = stats.occupied_rooms;
+                
+                ZetaTech.updateNotificationBadge(stats.pending_requests);
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // Load Rooms Overview
+        async function loadRoomsOverview() {
+            const container = document.getElementById('roomsOverviewContainer');
+            
+            try {
+                const response = await ZetaTech.apiRequest('/iot/rooms');
+                const rooms = await response.json();
+                
+                container.innerHTML = `
+                    <div class="stats-grid">
+                        ${rooms.map(room => `
+                            <div class="stat-card" style="cursor: pointer;" onclick="showRoomDetails(${room.id})">
+                                <div class="stat-icon ${room.is_occupied ? 'red' : 'green'}">
+                                    <i class="fas ${room.is_occupied ? 'fa-door-closed' : 'fa-door-open'}"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <h4>Room ${room.room_number}</h4>
+                                    <p>${room.room_type} - ${room.is_occupied ? 'Occupied' : 'Available'}</p>
+                                </div>
+                            </div>
+                        `).join('')}
+                    </div>
+                `;
+            } catch (error) {
+                container.innerHTML = '<p class="text-center" style="color: #ef4444;">Error loading room status</p>';
+            }
+        }
+
+        // Load Patients
+        async function loadPatients() {
+            const container = document.getElementById('patientsContainer');
+            
+            try {
+                const response = await ZetaTech.apiRequest('/admin/patients');
+                const patients = await response.json();
+                
+                if (patients.length === 0) {
+                    ZetaTech.showEmptyState('patientsContainer', 'fa-users', 'No Patients', 'No patients have registered yet.');
+                    return;
+                }
+                
+                container.innerHTML = `
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Registered</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${patients.map(p => `
+                                <tr>
+                                    <td>#${p.id}</td>
+                                    <td>${p.full_name}</td>
+                                    <td>${p.email}</td>
+                                    <td>${p.phone || '-'}</td>
+                                    <td>${ZetaTech.formatDate(p.created_at)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } catch (error) {
+                container.innerHTML = '<p class="text-center" style="color: #ef4444;">Error loading patients</p>';
+            }
+        }
+
+        // Load Rooms
+        async function loadRooms() {
+            const container = document.getElementById('roomsContainer');
+            
+            try {
+                const response = await ZetaTech.apiRequest('/iot/rooms');
+                const rooms = await response.json();
+                
+                container.innerHTML = `
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Room Number</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Last Updated</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${rooms.map(room => `
+                                <tr>
+                                    <td>${room.room_number}</td>
+                                    <td>${room.room_type}</td>
+                                    <td>
+                                        <span class="status-badge ${room.is_occupied ? 'rejected' : 'approved'}">
+                                            ${room.is_occupied ? 'Occupied' : 'Available'}
+                                        </span>
+                                    </td>
+                                    <td>${ZetaTech.formatDate(room.last_updated)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } catch (error) {
+                container.innerHTML = '<p class="text-center" style="color: #ef4444;">Error loading rooms</p>';
+            }
+        }
+
+        // Initial load
+        loadDashboardStats();
+        loadRoomsOverview();
+    </script>
+</body>
+</html>

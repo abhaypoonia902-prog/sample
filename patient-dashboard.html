@@ -1,0 +1,510 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Patient Dashboard - ZetaTech HMS</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="dashboard-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h3><i class="fas fa-heartbeat"></i> ZetaTech HMS</h3>
+            </div>
+            
+            <div class="user-info">
+                <div class="user-avatar" id="userAvatar">P</div>
+                <div class="user-details">
+                    <p id="userName">Patient Name</p>
+                    <span id="userRole">patient</span>
+                </div>
+            </div>
+            
+            <nav class="sidebar-nav">
+                <a href="#" class="nav-item active" data-page="dashboard">
+                    <i class="fas fa-home"></i> Dashboard
+                </a>
+                <a href="#" class="nav-item" data-page="requests">
+                    <i class="fas fa-clipboard-list"></i> My Requests
+                </a>
+                <a href="#" class="nav-item" data-page="reports">
+                    <i class="fas fa-file-medical"></i> Medical Reports
+                </a>
+                <a href="#" class="nav-item" data-page="rooms">
+                    <i class="fas fa-door-open"></i> Room Status
+                </a>
+            </nav>
+            
+            <div class="sidebar-footer">
+                <a href="#" class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </a>
+            </div>
+        </aside>
+
+        <!-- Main Area -->
+        <main class="main-area">
+            <!-- Top Bar -->
+            <header class="top-bar">
+                <div class="page-title">
+                    <h2>Patient Dashboard</h2>
+                    <p>Welcome back! Manage your healthcare needs</p>
+                </div>
+                <div class="top-actions">
+                    <button class="notification-btn">
+                        <i class="fas fa-bell"></i>
+                        <span class="notification-badge" id="notificationBadge">0</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            <div class="content-area">
+                <div id="alertContainer"></div>
+                
+                <!-- Dashboard View -->
+                <div id="dashboardView">
+                    <!-- Quick Actions -->
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-bolt"></i> Quick Actions</h3>
+                        </div>
+                        <div class="card-body">
+                            <button class="btn btn-primary" onclick="openNewRequestModal()">
+                                <i class="fas fa-plus"></i> New Service Request
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Stats -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon blue">
+                                <i class="fas fa-clipboard-list"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4 id="totalRequests">0</h4>
+                                <p>Total Requests</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon yellow">
+                                <i class="fas fa-clock"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4 id="pendingRequests">0</h4>
+                                <p>Pending</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon green">
+                                <i class="fas fa-check-circle"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4 id="completedRequests">0</h4>
+                                <p>Completed</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon purple">
+                                <i class="fas fa-file-medical"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4 id="totalReports">0</h4>
+                                <p>Medical Reports</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Recent Requests -->
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-history"></i> Recent Requests</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="recentRequestsContainer">
+                                <div class="loading">
+                                    <div class="spinner"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- My Requests View -->
+                <div id="requestsView" class="hidden">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-clipboard-list"></i> My Service Requests</h3>
+                            <button class="btn btn-primary" onclick="openNewRequestModal()">
+                                <i class="fas fa-plus"></i> New Request
+                            </button>
+                        </div>
+                        <div class="card-body">
+                            <div id="allRequestsContainer">
+                                <div class="loading">
+                                    <div class="spinner"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Medical Reports View -->
+                <div id="reportsView" class="hidden">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-file-medical"></i> My Medical Reports</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="medicalReportsContainer">
+                                <div class="loading">
+                                    <div class="spinner"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Room Status View -->
+                <div id="roomsView" class="hidden">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3><i class="fas fa-door-open"></i> Room Availability</h3>
+                        </div>
+                        <div class="card-body">
+                            <div id="roomsContainer">
+                                <div class="loading">
+                                    <div class="spinner"></div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- New Request Modal -->
+    <div class="modal-overlay" id="newRequestModal">
+        <div class="modal">
+            <div class="modal-header">
+                <h3><i class="fas fa-plus-circle"></i> New Service Request</h3>
+                <button class="modal-close" onclick="closeModal('newRequestModal')">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="modal-body">
+                <form id="newRequestForm">
+                    <div class="form-group">
+                        <label for="serviceType">Service Type</label>
+                        <select id="serviceType" required>
+                            <option value="">Select service type</option>
+                            <option value="consultation">Doctor Consultation</option>
+                            <option value="therapy">Therapy Session</option>
+                            <option value="follow-up">Follow-up Appointment</option>
+                            <option value="emergency">Emergency Care</option>
+                            <option value="lab-test">Laboratory Test</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="description">Description / Symptoms</label>
+                        <textarea id="description" placeholder="Describe your symptoms or reason for visit..." required></textarea>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button class="btn" onclick="closeModal('newRequestModal')">Cancel</button>
+                <button class="btn btn-primary" onclick="submitNewRequest()">
+                    <i class="fas fa-paper-plane"></i> Submit Request
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+    <script>
+        // Check authentication
+        if (!ZetaTech.checkAuth('patient')) {
+            window.location.href = 'index.html';
+        }
+
+        // Initialize
+        const user = ZetaTech.getUser();
+        ZetaTech.initSidebar(user);
+
+        // Navigation
+        document.querySelectorAll('.nav-item').forEach(item => {
+            item.addEventListener('click', (e) => {
+                e.preventDefault();
+                const page = item.dataset.page;
+                showPage(page);
+                
+                document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+                item.classList.add('active');
+            });
+        });
+
+        function showPage(page) {
+            document.getElementById('dashboardView').classList.add('hidden');
+            document.getElementById('requestsView').classList.add('hidden');
+            document.getElementById('reportsView').classList.add('hidden');
+            document.getElementById('roomsView').classList.add('hidden');
+            
+            document.getElementById(page + 'View').classList.remove('hidden');
+            
+            // Load data based on page
+            if (page === 'dashboard') {
+                loadDashboardStats();
+                loadRecentRequests();
+            } else if (page === 'requests') {
+                loadAllRequests();
+            } else if (page === 'reports') {
+                loadMedicalReports();
+            } else if (page === 'rooms') {
+                loadRoomStatus();
+            }
+        }
+
+        // Load Dashboard Stats
+        async function loadDashboardStats() {
+            try {
+                const requestsResponse = await ZetaTech.apiRequest('/patient/requests');
+                const requests = await requestsResponse.json();
+                
+                const reportsResponse = await ZetaTech.apiRequest('/patient/reports');
+                const reports = await reportsResponse.json();
+                
+                document.getElementById('totalRequests').textContent = requests.length;
+                document.getElementById('pendingRequests').textContent = requests.filter(r => r.status === 'pending').length;
+                document.getElementById('completedRequests').textContent = requests.filter(r => r.status === 'completed').length;
+                document.getElementById('totalReports').textContent = reports.length;
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        // Load Recent Requests
+        async function loadRecentRequests() {
+            const container = document.getElementById('recentRequestsContainer');
+            
+            try {
+                const response = await ZetaTech.apiRequest('/patient/requests');
+                const requests = await response.json();
+                
+                if (requests.length === 0) {
+                    ZetaTech.showEmptyState('recentRequestsContainer', 'fa-clipboard-list', 'No Requests Yet', 'Create your first service request to get started.');
+                    return;
+                }
+                
+                const recentRequests = requests.slice(0, 5);
+                
+                container.innerHTML = `
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>Service Type</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${recentRequests.map(req => `
+                                <tr>
+                                    <td>${req.service_type}</td>
+                                    <td>${req.description.substring(0, 50)}${req.description.length > 50 ? '...' : ''}</td>
+                                    <td>${ZetaTech.getStatusBadge(req.status)}</td>
+                                    <td>${ZetaTech.formatDate(req.created_at)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } catch (error) {
+                container.innerHTML = '<p class="text-center" style="color: #ef4444;">Error loading requests</p>';
+            }
+        }
+
+        // Load All Requests
+        async function loadAllRequests() {
+            const container = document.getElementById('allRequestsContainer');
+            
+            try {
+                const response = await ZetaTech.apiRequest('/patient/requests');
+                const requests = await response.json();
+                
+                if (requests.length === 0) {
+                    ZetaTech.showEmptyState('allRequestsContainer', 'fa-clipboard-list', 'No Requests Yet', 'Create your first service request to get started.');
+                    return;
+                }
+                
+                container.innerHTML = `
+                    <table class="data-table">
+                        <thead>
+                            <tr>
+                                <th>ID</th>
+                                <th>Service Type</th>
+                                <th>Description</th>
+                                <th>Status</th>
+                                <th>Admin Reason</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${requests.map(req => `
+                                <tr>
+                                    <td>#${req.id}</td>
+                                    <td>${req.service_type}</td>
+                                    <td>${req.description}</td>
+                                    <td>${ZetaTech.getStatusBadge(req.status)}</td>
+                                    <td>${req.admin_reason || '-'}</td>
+                                    <td>${ZetaTech.formatDate(req.created_at)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } catch (error) {
+                container.innerHTML = '<p class="text-center" style="color: #ef4444;">Error loading requests</p>';
+            }
+        }
+
+        // Load Medical Reports
+        async function loadMedicalReports() {
+            const container = document.getElementById('medicalReportsContainer');
+            
+            try {
+                const response = await ZetaTech.apiRequest('/patient/reports');
+                const reports = await response.json();
+                
+                if (reports.length === 0) {
+                    ZetaTech.showEmptyState('medicalReportsContainer', 'fa-file-medical', 'No Medical Reports', 'Your medical reports will appear here after your appointments.');
+                    return;
+                }
+                
+                container.innerHTML = reports.map(report => `
+                    <div class="content-card" style="margin-bottom: 15px;">
+                        <div class="card-body">
+                            <h4 style="margin-bottom: 10px; color: #2563eb;">
+                                <i class="fas fa-file-medical"></i> Report #${report.id}
+                            </h4>
+                            <p><strong>Date:</strong> ${ZetaTech.formatDate(report.created_at)}</p>
+                            <p><strong>Diagnosis:</strong> ${report.diagnosis}</p>
+                            <p><strong>Prescription:</strong> ${report.prescription}</p>
+                            ${report.doctor_notes ? `<p><strong>Doctor Notes:</strong> ${report.doctor_notes}</p>` : ''}
+                        </div>
+                    </div>
+                `).join('');
+            } catch (error) {
+                container.innerHTML = '<p class="text-center" style="color: #ef4444;">Error loading reports</p>';
+            }
+        }
+
+        // Load Room Status
+        async function loadRoomStatus() {
+            const container = document.getElementById('roomsContainer');
+            
+            try {
+                const response = await ZetaTech.apiRequest('/iot/rooms');
+                const rooms = await response.json();
+                
+                container.innerHTML = `
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-icon green">
+                                <i class="fas fa-door-open"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4>${rooms.filter(r => !r.is_occupied).length}</h4>
+                                <p>Available Rooms</p>
+                            </div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-icon red">
+                                <i class="fas fa-door-closed"></i>
+                            </div>
+                            <div class="stat-info">
+                                <h4>${rooms.filter(r => r.is_occupied).length}</h4>
+                                <p>Occupied Rooms</p>
+                            </div>
+                        </div>
+                    </div>
+                    <table class="data-table" style="margin-top: 20px;">
+                        <thead>
+                            <tr>
+                                <th>Room Number</th>
+                                <th>Type</th>
+                                <th>Status</th>
+                                <th>Last Updated</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            ${rooms.map(room => `
+                                <tr>
+                                    <td>${room.room_number}</td>
+                                    <td>${room.room_type}</td>
+                                    <td>
+                                        <span class="status-badge ${room.is_occupied ? 'rejected' : 'approved'}">
+                                            ${room.is_occupied ? 'Occupied' : 'Available'}
+                                        </span>
+                                    </td>
+                                    <td>${ZetaTech.formatDate(room.last_updated)}</td>
+                                </tr>
+                            `).join('')}
+                        </tbody>
+                    </table>
+                `;
+            } catch (error) {
+                container.innerHTML = '<p class="text-center" style="color: #ef4444;">Error loading room status</p>';
+            }
+        }
+
+        // New Request Modal
+        function openNewRequestModal() {
+            ZetaTech.openModal('newRequestModal');
+        }
+
+        async function submitNewRequest() {
+            const serviceType = document.getElementById('serviceType').value;
+            const description = document.getElementById('description').value;
+            
+            if (!serviceType || !description) {
+                ZetaTech.showAlert('alertContainer', 'Please fill in all fields', 'error');
+                return;
+            }
+            
+            try {
+                const response = await ZetaTech.apiRequest('/patient/requests', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        service_type: serviceType,
+                        description: description
+                    })
+                });
+                
+                if (response.ok) {
+                    ZetaTech.closeModal('newRequestModal');
+                    ZetaTech.showAlert('alertContainer', 'Request submitted successfully!', 'success');
+                    document.getElementById('newRequestForm').reset();
+                    loadDashboardStats();
+                    loadRecentRequests();
+                } else {
+                    const error = await response.json();
+                    ZetaTech.showAlert('alertContainer', error.detail || 'Failed to submit request', 'error');
+                }
+            } catch (error) {
+                ZetaTech.showAlert('alertContainer', 'Network error. Please try again.', 'error');
+            }
+        }
+
+        // Initial load
+        loadDashboardStats();
+        loadRecentRequests();
+    </script>
+</body>
+</html>

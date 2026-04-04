@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ZetaTech HMS - Hospital Management System</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+</head>
+<body>
+    <div class="container">
+        <header class="header">
+            <div class="logo">
+                <i class="fas fa-heartbeat"></i>
+                <div class="logo-text">
+                    <h1>ZetaTech HMS</h1>
+                    <span>Hospital Management System</span>
+                </div>
+            </div>
+            <div class="badges">
+                <span class="badge"><i class="fas fa-shield-alt"></i> HIPAA Compliant</span>
+                <span class="badge"><i class="fas fa-cloud"></i> Cloud-Native</span>
+                <span class="badge"><i class="fas fa-microchip"></i> IoT Ready</span>
+            </div>
+        </header>
+
+        <main class="main-content">
+            <div class="hero-section">
+                <h2>Select Your Role to Login</h2>
+                <p class="subtitle">Secure, privacy-first healthcare management platform</p>
+            </div>
+
+            <div class="role-grid">
+                <a href="login.html?role=admin" class="role-card admin">
+                    <div class="role-icon">
+                        <i class="fas fa-user-shield"></i>
+                    </div>
+                    <h3>Administrator</h3>
+                    <p>Full system access with privacy controls</p>
+                    <div class="role-features">
+                        <span><i class="fas fa-check"></i> Manage requests</span>
+                        <span><i class="fas fa-check"></i> View statistics</span>
+                        <span><i class="fas fa-check"></i> Room assignment</span>
+                    </div>
+                    <div class="login-btn">Login <i class="fas fa-arrow-right"></i></div>
+                </a>
+
+                <a href="login.html?role=doctor" class="role-card doctor">
+                    <div class="role-icon">
+                        <i class="fas fa-user-md"></i>
+                    </div>
+                    <h3>Doctor</h3>
+                    <p>Patient care & medical reports</p>
+                    <div class="role-features">
+                        <span><i class="fas fa-check"></i> View patients</span>
+                        <span><i class="fas fa-check"></i> Create reports</span>
+                        <span><i class="fas fa-check"></i> Prescriptions</span>
+                    </div>
+                    <div class="login-btn">Login <i class="fas fa-arrow-right"></i></div>
+                </a>
+
+                <a href="login.html?role=nurse" class="role-card nurse">
+                    <div class="role-icon">
+                        <i class="fas fa-user-nurse"></i>
+                    </div>
+                    <h3>Nurse</h3>
+                    <p>Patient monitoring & assistance</p>
+                    <div class="role-features">
+                        <span><i class="fas fa-check"></i> Monitor patients</span>
+                        <span><i class="fas fa-check"></i> Update vitals</span>
+                        <span><i class="fas fa-check"></i> Room status</span>
+                    </div>
+                    <div class="login-btn">Login <i class="fas fa-arrow-right"></i></div>
+                </a>
+
+                <a href="login.html?role=patient" class="role-card patient">
+                    <div class="role-icon">
+                        <i class="fas fa-user-injured"></i>
+                    </div>
+                    <h3>Patient</h3>
+                    <p>View your own medical records</p>
+                    <div class="role-features">
+                        <span><i class="fas fa-check"></i> Service requests</span>
+                        <span><i class="fas fa-check"></i> Medical reports</span>
+                        <span><i class="fas fa-check"></i> Track status</span>
+                    </div>
+                    <div class="login-btn">Login <i class="fas fa-arrow-right"></i></div>
+                </a>
+            </div>
+
+            <div class="info-section">
+                <div class="info-card">
+                    <i class="fas fa-lock"></i>
+                    <h4>Privacy First</h4>
+                    <p>Your medical data is encrypted and only accessible to you and authorized healthcare providers.</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-bolt"></i>
+                    <h4>Real-time Updates</h4>
+                    <p>IoT-enabled room monitoring ensures efficient resource allocation and reduced wait times.</p>
+                </div>
+                <div class="info-card">
+                    <i class="fas fa-mobile-alt"></i>
+                    <h4>Cloud Accessible</h4>
+                    <p>Access your health information securely from anywhere, anytime on any device.</p>
+                </div>
+            </div>
+        </main>
+
+        <footer class="footer">
+            <p>&copy; 2024 ZetaTech HMS. Built with <i class="fas fa-heart"></i> for better healthcare.</p>
+            <p class="team">Team Avengers - BCA (Hons) CS&CL Project</p>
+        </footer>
+    </div>
+
+    <script src="main.js"></script>
+</body>
+</html>
