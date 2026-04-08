@@ -1,6 +1,6 @@
 // ============== ZETATECH HMS - MAIN JAVASCRIPT ==============
 
-const API_BASE_URL = 'http://localhost:8000';
+const API_BASE = "https://sample-2-0ko5.onrender.com";
 
 // ============== AUTH UTILITIES ==============
 
