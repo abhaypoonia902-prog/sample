@@ -15,6 +15,9 @@ from auth import (
 # Create database tables
 models.Base.metadata.create_all(bind=engine)
 
+from fastapi.staticfiles import StaticFiles
+from fastapi.responses import FileResponse
+import os
 app = FastAPI(
     title="ZetaTech Hospital Management System",
     description="Cloud-Based Secure Hospital Service Management with IoT Integration",
@@ -29,6 +32,11 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+@app.get("/")
+def root():
+    return FileResponse("index.html")
+
+app.mount("/static", StaticFiles(directory="."), name="static")
 
 # ============== AUTHENTICATION ENDPOINTS ==============
 
